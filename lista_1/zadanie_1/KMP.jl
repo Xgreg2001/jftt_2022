@@ -1,23 +1,25 @@
-using BenchmarkTools
+function kmp_matcher(T::Array{Char}, P::Array{Char})::Array{Int}
+    sol::Vector{Int} = []
 
-function kmp_matcher(T::Array{Char}, P::Array{Char})
     n = length(T)
     m = length(P)
     pie = compute_prefix_function(P)
     q = 0
     for i in 1:n
-        while q > 0 && P[q + 1] != T[i]
+        while q > 0 && P[q+1] != T[i]
             q = pie[q]
         end
 
-        if P[q + 1] == T[i]
+        if P[q+1] == T[i]
             q = q + 1
         end
         if q == m
-            println("Pattern occurs with shifta $(i - m)" )
+            push!(sol, i - m)
             q = pie[q]
         end
     end
+
+    return sol
 end
 
 function compute_prefix_function(P::Array{Char})::Array{Int64}
@@ -26,11 +28,11 @@ function compute_prefix_function(P::Array{Char})::Array{Int64}
 
     k = 0
     for q in 2:m
-        while k > 0 && P[k + 1] != P[q]
+        while k > 0 && P[k+1] != P[q]
             k = pie[k]
-        
+
         end
-        if P[k + 1] == P[q]
+        if P[k+1] == P[q]
             k = k + 1
         end
         pie[q] = k
@@ -51,7 +53,9 @@ function main()
 
     text_array = collect(text)
 
-    kmp_matcher(text_array, pattern_array)
+    sol = kmp_matcher(text_array, pattern_array)
+
+    println(sol)
 end
 
 main()
