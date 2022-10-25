@@ -22,6 +22,7 @@ function kmp_matcher(T::Array{Char}, P::Array{Char})::Array{Int}
     return sol
 end
 
+
 function compute_prefix_function(P::Array{Char})::Array{Int64}
     m = length(P)
     pie = zeros(Int64, m)
@@ -40,6 +41,7 @@ function compute_prefix_function(P::Array{Char})::Array{Int64}
     return pie
 end
 
+
 function main()
     if (length(ARGS) < 2)
         return -1
@@ -57,6 +59,7 @@ function main()
 
     println(sol)
 end
+
 
 if abspath(PROGRAM_FILE) == @__FILE__
     main()

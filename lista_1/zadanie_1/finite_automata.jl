@@ -1,5 +1,4 @@
 
-
 function fa_matcher(T::String, P::Array{Char})
     delta_dictionary = Dict([])
 
@@ -17,11 +16,11 @@ function fa_matcher(T::String, P::Array{Char})
     return solution
 end
 
+
 function fa_is_suffix(word::Array{Char}, sufix::Array{Char})
     n = length(sufix)
     return sufix == word[end-n+1:end]
 end
-
 
 
 function fa_delta(P::Array{Char}, q::Int64, a::Char, m::Int64, delta_dictionary)
@@ -39,6 +38,7 @@ function fa_delta(P::Array{Char}, q::Int64, a::Char, m::Int64, delta_dictionary)
     return k
 end
 
+
 function main()
     if (length(ARGS) < 2)
         return -1
@@ -54,6 +54,7 @@ function main()
 
     println(sol)
 end
+
 
 if abspath(PROGRAM_FILE) == @__FILE__
     main()
