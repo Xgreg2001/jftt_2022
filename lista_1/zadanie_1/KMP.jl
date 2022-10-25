@@ -58,4 +58,6 @@ function main()
     println(sol)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end
