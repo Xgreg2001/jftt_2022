@@ -6,7 +6,7 @@ scan.c: scan.l
 	flex -o scan.c scan.l
 
 clean:
-	rm scan.c scan sol.py
+	rm -f scan.c scan sol.py
 
 test: scan
 	./scan < test/test.py > sol.py

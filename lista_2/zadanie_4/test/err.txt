@@ -1,0 +1,8 @@
+Błąd: za mała liczba argumentów
+Błąd: za mała liczba operatorów
+Błąd: zły symbol: .
+Błąd: za mała liczba argumentów
+Błąd: za mała liczba argumentów
+Błąd: dzielenie przez 0
+Błąd: dzielenie przez 0
+Błąd: dzielenie przez 0

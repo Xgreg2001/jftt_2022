@@ -17,58 +17,124 @@ stack* s;
 %x ERROR
 
 %%
-<ERROR>.*\n                stack_clear_error(s); stack_clear(s); BEGIN(INITIAL);
+<ERROR>.*\n                 stack_clear_error(s); stack_clear(s); BEGIN(INITIAL);
 
 ^\n                         ;
 
 -?[0-9]+                    stack_push(s, atoi(yytext));
 
 "+"                         {
-                            if (!stack_error_occured(s)) {a = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) {b = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) {stack_push(s, b + a);} else {BEGIN(ERROR);};
+                            a = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                BEGIN(ERROR);
+                            } else {
+                                b = stack_pop(s);
+                                if (stack_error_occured(s)){
+                                    BEGIN(ERROR);
+                                } else {
+                                    stack_push(s, a + b);
+                                }
+                            }
                             }
 
 "-"                         {
-                            if (!stack_error_occured(s)) { a = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { b = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { stack_push(s, b - a);} else {BEGIN(ERROR);};
+                            a = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                BEGIN(ERROR);
+                            } else {
+                                b = stack_pop(s);
+                                if (stack_error_occured(s)){
+                                    BEGIN(ERROR);
+                                } else {
+                                    stack_push(s, b - a);
+                                }
+                            }
                             }
 
 "*"                         {
-                            if (!stack_error_occured(s)) { a = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { b = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { stack_push(s, b * a);} else {BEGIN(ERROR);};
+                            a = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                BEGIN(ERROR);
+                            } else {
+                                b = stack_pop(s);
+                                if (stack_error_occured(s)){
+                                    BEGIN(ERROR);
+                                } else {
+                                    stack_push(s, a * b);
+                                }
+                            }
                             }
 
 "/"                         {
-                            if (!stack_error_occured(s)) { a = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { b = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { stack_push(s, b / a);} else {BEGIN(ERROR);};
+                            a = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                BEGIN(ERROR);
+                            } else {
+                                b = stack_pop(s);
+                                if (stack_error_occured(s)){
+                                    BEGIN(ERROR);
+                                } else {
+                                    if (a == 0){
+                                        fprintf(stderr, "Błąd: dzielenie przez 0\n");
+                                        BEGIN(ERROR);
+                                    } else {
+                                        stack_push(s, b / a);
+                                    }
+                                }
+                            }
                             }
 
 "^"                         {
-                            if (!stack_error_occured(s)) { a = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { b = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { stack_push(s, pow(b, a));} else {BEGIN(ERROR);};
+                            a = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                BEGIN(ERROR);
+                            } else {
+                                b = stack_pop(s);
+                                if (stack_error_occured(s)){
+                                    BEGIN(ERROR);
+                                } else {
+                                    stack_push(s, pow(b, a));
+                                }
+                            }
                             }
 
 "%"                        {
-                            if (!stack_error_occured(s)) { a = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { b = stack_pop(s);} else {BEGIN(ERROR);}; 
-                            if (!stack_error_occured(s)) { stack_push(s, b % a);} else {BEGIN(ERROR);};
+                            a = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                BEGIN(ERROR);
+                            } else {
+                                b = stack_pop(s);
+                                if (stack_error_occured(s)){
+                                    BEGIN(ERROR);
+                                } else {
+                                    if (a == 0){
+                                        fprintf(stderr, "Błąd: dzielenie przez 0\n");
+                                        BEGIN(ERROR);
+                                    } else {
+                                        stack_push(s, b % a);
+                                    }
+                                }
+                            }
                             }
 
 [ \t]+                      ;
 
 \n                          {
-                            if (!stack_error_occured(s)) { result = stack_pop(s);} else {BEGIN(ERROR);};
-                            if (!stack_error_occured(s)) { if (!stack_is_empty(s)) { fprintf(stderr, "Błąd: nie wystarczająca liczba operatorów\n"); BEGIN(ERROR); }
-                            else {printf("= %d\n", result);} } else {BEGIN(ERROR);};
+                            result = stack_pop(s);
+                            if (stack_error_occured(s)){
+                                stack_clear_error(s); 
+                                stack_clear(s);
+                            } else if (!stack_is_empty(s)){
+                                fprintf(stderr, "Błąd: za mała liczba operatorów\n");
+                                stack_clear_error(s); 
+                                stack_clear(s);
+                            } else {
+                                printf("= %d\n", result);
+                            }
                             }
 
 .                           {
-                            fprintf(stderr, "Błąd zły symbol: %s\n", yytext);
+                            fprintf(stderr, "Błąd: zły symbol: %s\n", yytext);
                             BEGIN(ERROR);
                             }
 

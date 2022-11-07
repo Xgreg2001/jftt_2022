@@ -6,7 +6,7 @@ scan.c: scan.l
 	flex -o scan.c scan.l
 
 clean:
-	rm scan.c scan sols/l2z1a.sol.txt sols/l2z1b.sol.txt
+	rm -f scan.c scan sols/l2z1a.sol.txt sols/l2z1b.sol.txt
 
 test: scan
 	./scan < test/l2z1a.txt > sols/l2z1a.sol.txt
