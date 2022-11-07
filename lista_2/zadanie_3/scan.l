@@ -20,12 +20,12 @@ int delete_docs = 1;
 
     BEGIN(BASE);
 
-<BASE>\"                        ECHO; BEGIN(STRING);
-<BASE>[ \t]*\/\/                BEGIN(SINGLE_LINE_COMMENT);
-<BASE>[ \t]*\/\*                BEGIN(MULTI_LINE_COMMENT);
-<BASE>"#include <"              ECHO; BEGIN(INCLUDE);
-<BASE>[ \t]*((\/\/\/)|(\/\/!))  if (!delete_docs) ECHO; BEGIN(SINGLE_LINE_DOC);
-<BASE>[ \t]*((\/\*\*)|(\/\*!))  if (!delete_docs) ECHO; BEGIN(MULTI_LINE_DOC);
+<BASE>\"                                                    ECHO; BEGIN(STRING);
+<BASE>[ \t]*\/(\\\n)?\/                                     BEGIN(SINGLE_LINE_COMMENT);
+<BASE>[ \t]*\/(\\\n)?\*                                     BEGIN(MULTI_LINE_COMMENT);
+<BASE>"#include <"                                          ECHO; BEGIN(INCLUDE);
+<BASE>[ \t]*((\/(\\\n)?\/(\\\n)?\/)|(\/(\\\n)?\/(\\\n)?!))  if (!delete_docs) ECHO; BEGIN(SINGLE_LINE_DOC);
+<BASE>[ \t]*((\/(\\\n)?\*(\\\n)?\*)|(\/(\\\n)?\*(\\\n)?!))  if (!delete_docs) ECHO; BEGIN(MULTI_LINE_DOC);
 
 <STRING>\"                      ECHO; BEGIN(BASE);
 
