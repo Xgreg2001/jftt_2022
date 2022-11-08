@@ -24,6 +24,11 @@ int yylex();
 <BASE>\"         ECHO; BEGIN(STRING1);
 <BASE>\'         ECHO; BEGIN(STRING2);
 
+<STRING1>\\\"           ECHO;
+<STRING2>\\\'           ECHO;
+<DOCSTRING1>\\\"        ECHO;
+<DOCSTRING2>\\\'        ECHO;
+
 <DOCSTRING1>\"\"\" ECHO; BEGIN(BASE);
 <DOCSTRING2>"'''"   ECHO; BEGIN(BASE);
 <STRING1>\"         ECHO; BEGIN(BASE);
