@@ -6,13 +6,12 @@ import sys
 
 class CalcLexer(Lexer):
     # Set of token names.   This is always required
-    tokens = {NUM, ERR, PLUS, MINUS, TIMES, DIVIDE, POW, LPAREN, RPAREN,
+    tokens = {NUM, PLUS, MINUS, TIMES, DIVIDE, POW, LPAREN, RPAREN,
               NEWLINE}
 
     # String containing ignored characters
     ignore = ' \t'
-    ignore_comment = r'^#(.|\\\n)*\n'
-    ignore_removed_newline = r'\\\n'
+    ignore_comment = r'^#.*\n'
 
     @_(r'\d+')
     def NUM(self, t):
@@ -28,4 +27,10 @@ class CalcLexer(Lexer):
     LPAREN = r'\('
     RPAREN = r'\)'
     NEWLINE = r'\n'
-    ERR = r'.+'
+
+    # Error handling rule
+    def error(self, t):
+        print(f"Error: błąd składniowy")
+        while self.text[self.index] != '\n':
+            self.index += 1
+        self.index += 1

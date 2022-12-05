@@ -1,11 +1,12 @@
 from sly import Parser
 from calclex import CalcLexer
+import sys
 
 P = 1234577
 
 
 class CalcParser(Parser):
-    debugfile = 'parser.out'
+    # debugfile = 'parser.out'
     # Get the token list from the lexer (required)
     tokens = CalcLexer.tokens
 
@@ -153,14 +154,12 @@ def main():
     lexer = CalcLexer()
     parser = CalcParser()
 
-    while True:
-        text = ""
-        try:
-            text += input()
-        except EOFError:
-            return 0
-        text += '\n'
-        parser.parse(lexer.tokenize(text))
+    line = sys.stdin.readline()
+    while line:
+        while line.endswith('\\\n'):
+            line = line[:-2] + sys.stdin.readline()
+        parser.parse(lexer.tokenize(line))
+        line = sys.stdin.readline()
 
 
 if __name__ == '__main__':

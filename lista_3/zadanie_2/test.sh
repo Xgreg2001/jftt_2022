@@ -2,4 +2,4 @@
 
 python calcparser.py < test/test.txt > out.txt
 diff out.txt test/sol.txt
-
+rm out.txt
