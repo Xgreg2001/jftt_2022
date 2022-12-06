@@ -109,6 +109,7 @@ long zp_mul(long a, long b, long p){
     return ((a * b) % p + p) % p;
 }
 
+// extended euclidean algorithm
 long zp_inv(long a, long p) {
     if (a == 0){
         error_str = str_concat(error_str, "0 nie jest odwracalne modulo ");
@@ -126,13 +127,22 @@ long zp_inv(long a, long p) {
         free(val_p);
         return -1;
     }
-    if (p == P)
-        return zp_pow(a, p - 2, p);
 
-    // hate this part it's awful
-    long t = 1;
-    while (a * t % p != 1)
-        t++;
+    long t = 0, newt = 1;
+    long r = p, newr = a;
+    long q, tmp;
+    while (newr != 0) {
+        q = r / newr;
+        tmp = newt;
+        newt = t - q * newt;
+        t = tmp;
+        tmp = newr;
+        newr = r - q * newr;
+        r = tmp;
+    }
+    if (t < 0) {
+        t += p;
+    }
     return t;
 }
 
@@ -170,7 +180,7 @@ char* str_concat(char* s1, char* s2) {
         exit(1);
     }
     strcpy(result, s1);
-    free(s1); // thats propably not smart but whatever
+    free(s1);
     strcat(result, s2);
     return result;
 }

@@ -79,11 +79,11 @@ class CalcParser(Parser):
 
     @_('expr DIVIDE expr')
     def expr(self, p):
-        if p.expr1 == 0:
-            self.error_message = "0 nie jest odwracalne modulo 1234577"
-            return -1
         self.rpn += "/ "
-        return (p.expr0 * pow(p.expr1, P - 2, P)) % P
+        inv = self.inv(p.expr1, P)
+        if inv == -1:
+            return -1
+        return (p.expr0 * inv) % P
 
     @_('expr POW expr_pow')
     def expr(self, p):
@@ -118,17 +118,10 @@ class CalcParser(Parser):
 
     @_('expr_pow DIVIDE expr_pow')
     def expr_pow(self, p):
-        if p.expr_pow1 == 0:
-            self.error_message = "0 nie jest odwracalne modulo 1234576"
+        inv = self.inv(p.expr_pow1, P - 1)
+        if inv == -1:
             return -1
-        elif (P-1) % p.expr_pow1 == 0:
-            self.error_message = f"{p.expr_pow1} nie jest odwracalne modulo 1234576"
-            return -1
-
-        t = 1
-        while (t * p.expr_pow1) % (P - 1) != 1:
-            t += 1
-        return (p.expr_pow0 * t) % (P - 1)
+        return (p.expr_pow0 * inv) % (P - 1)
 
     @_('NUM')
     def number(self, p):
@@ -148,6 +141,27 @@ class CalcParser(Parser):
 
     def error(self, tok):
         pass
+
+    # extended euclidean algorithm
+    def inv(self, a, p):
+        if a == 0:
+            self.error_message = f"0 nie jest odwracalne modulo {p}"
+            return -1
+        if p % a == 0:
+            self.error_message = f"{a} nie jest odwracalne modulo {p}"
+            return -1
+
+        t = 0
+        newt = 1
+        r = p
+        newr = a
+        while newr != 0:
+            quotient = r // newr
+            (t, newt) = (newt, t - quotient * newt)
+            (r, newr) = (newr, r - quotient * newr)
+        if t < 0:
+            t = t + p
+        return t
 
 
 def main():
